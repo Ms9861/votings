@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Masjid Sarkare Do Alam ﷺ | Imam Voting</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(135deg,#eefaf5,#f8fffc);color:#173b32}
+.header{background:linear-gradient(135deg,#075e54,#0d806f);color:#fff;text-align:center;padding:28px 18px}
+.header h1{margin:0 0 8px;font-size:clamp(25px,5vw,42px)}.header p{margin:0;opacity:.9}
+.container{max-width:900px;margin:28px auto;padding:0 16px}.card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 10px 35px #164e3d18;margin-bottom:20px}
+h2{margin-top:0;color:#075e54}.notice{padding:13px 15px;border-radius:12px;background:#f0faf6;border-left:4px solid #0d806f;margin-bottom:18px}
+label{display:block;font-weight:700;margin:15px 0 7px}input,textarea{width:100%;padding:13px;border:1px solid #cbded8;border-radius:10px;font-size:16px}textarea{min-height:120px;resize:vertical}
+.candidates{display:grid;grid-template-columns:1fr 1fr;gap:15px}.candidate{border:2px solid #d7e9e3;border-radius:15px;padding:18px;cursor:pointer;transition:.2s}.candidate:hover{transform:translateY(-2px);box-shadow:0 5px 18px #00000010}.candidate.selected{border-color:#0d806f;background:#f0faf6}.candidate input{width:auto;margin-right:8px}
+.reason{display:none}.reason.show{display:block}.btn{width:100%;padding:15px;border:0;border-radius:12px;background:#075e54;color:white;font-size:17px;font-weight:700;cursor:pointer;margin-top:18px}.btn:hover{background:#064b43}.btn:disabled{opacity:.55;cursor:not-allowed}
+.small{font-size:13px;color:#60766f}.error{color:#a52828;background:#fff0f0;padding:10px;border-radius:9px;display:none;margin-top:10px}.success{display:none;text-align:center;padding:25px}.success h2{color:#08785f}.stats{display:grid;grid-template-columns:1fr 1fr;gap:15px}.stat{padding:18px;border-radius:15px;background:#f6fbf9;text-align:center}.stat b{font-size:30px;color:#075e54}.footer{text-align:center;padding:25px;color:#688079;font-size:13px}
+@media(max-width:650px){.candidates,.stats{grid-template-columns:1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+<header class="header">
+<h1>Masjid Sarkare Do Alam ﷺ</h1>
+<p>इमाम चयन मतदान पोर्टल | Imam Voting Portal</p>
+</header>
+<main class="container">
+<section class="card">
+<h2>🕌 सामुदायिक इमाम चयन | Community Imam Selection</h2>
+<div class="notice">कृपया अपनी जानकारी भरें और एक नामांकित व्यक्ति चुनें। प्रत्येक मोबाइल नंबर से केवल एक वोट दिया जा सकता है।<br>Please provide your details and select one nominated person. Each mobile number can submit only one vote.</div>
+<form id="voteForm">
+<label for="name">आपका नाम | Your Name *</label>
+<input id="name" required maxlength="80" placeholder="अपना पूरा नाम | Enter your full name">
+
+<label for="mobile">मोबाइल नंबर | Mobile Number *</label>
+<input id="mobile" required inputmode="numeric" maxlength="10" pattern="[6-9][0-9]{9}" placeholder="10 अंकों का मोबाइल नंबर | 10-digit mobile number">
+<div class="small">आपके मोबाइल नंबर का उपयोग दोबारा मतदान रोकने के लिए किया जाता है।<br>Your mobile number is used to prevent duplicate voting.</div>
+
+<label>इमाम चुनें | Choose Imam *</label>
+<div class="candidates">
+<label class="candidate" id="cand1">
+<input type="radio" name="candidate" value="MOHAMMAD CHAND"> <strong>MOHAMMAD CHAND</strong>
+
+</label>
+<label class="candidate" id="cand2">
+<input type="radio" name="candidate" value="DAWATE ISLAMI HAZRAT"> <strong>DAWATE ISLAMI HAZRAT</strong>
+
+</label>
+</div>
+
+<div id="reasonBox" class="reason">
+<label for="reason">आप Dawate Islami Hazrat को इमाम क्यों चुन रहे हैं? | Why are you choosing Dawate Islami Hazrat as Imam? *</label>
+<textarea id="reason" maxlength="1000" placeholder="अपना उचित कारण बताएं... | Please explain your reason..."></textarea>
+<div class="small">न्यूनतम 30 अक्षर। जमा की गई जानकारी को अधिकृत एडमिन द्वारा समीक्षा किया जा सकता है।<br>Minimum 30 characters. Submissions may be reviewed by the authorised admin before being counted.</div>
+</div>
+
+<div id="error" class="error"></div>
+<button class="btn" id="submitBtn" type="submit">वोट जमा करें | Submit Vote</button>
+</form>
+<div id="success" class="success">
+<h2>वोट सफलतापूर्वक जमा हो गया | Vote Submitted Successfully</h2>
+<p>आपका वोट दर्ज कर लिया गया है। भाग लेने के लिए धन्यवाद।<br>Your vote has been recorded. Thank you for participating respectfully.</p>
+</div>
+</section>
+
+<section class="card">
+<h2>वर्तमान वोट सारांश | Current Vote Summary</h2>
+<div class="stats">
+<div class="stat"><b id="v1">—</b><br>मोहम्मद चांद | Mohammad Chand</div>
+<div class="stat"><b id="v2">—</b><br>दावते इस्लामी हज़रत | Dawate Islami Hazrat</div>
+</div>
+
+</section>
+</main>
+<footer class="footer">Masjid Sarkare Do Alam ﷺ • सामुदायिक मतदान पोर्टल | Community Voting Portal<br><br>© 2026 All Rights Reserved • Designed by E-Tech • Founder: MOHD SOHAIL • Contact: 7240610313</footer>
+<script>
+const API_URL="PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const form=document.getElementById('voteForm'), errorBox=document.getElementById('error'), reasonBox=document.getElementById('reasonBox');
+document.querySelectorAll('input[name=candidate]').forEach(r=>{
+ r.addEventListener('change',()=>{
+  document.querySelectorAll('.candidate').forEach(x=>x.classList.remove('selected'));
+  r.closest('.candidate').classList.add('selected');
+  reasonBox.classList.toggle('show',r.value==='DAWATE ISLAMI HAZRAT');
+ });
+});
+function error(msg){errorBox.textContent=msg;errorBox.style.display='block'}
+form.addEventListener('submit',async e=>{
+ e.preventDefault(); errorBox.style.display='none';
+ const name=document.getElementById('name').value.trim();
+ const mobile=document.getElementById('mobile').value.trim();
+ const candidate=document.querySelector('input[name=candidate]:checked')?.value;
+ const reason=document.getElementById('reason').value.trim();
+ if(!name||!/^[6-9]\d{9}$/.test(mobile)||!candidate)return error("Please enter a valid name, 10 अंकों का मोबाइल नंबर | 10-digit mobile number, and select a candidate.");
+ if(candidate==='DAWATE ISLAMI HAZRAT' && reason.length<30)return error("Please provide a genuine reason of at least 30 characters.");
+ const btn=document.getElementById('submitBtn'); btn.disabled=true; btn.textContent="Submitting...";
+ try{
+  if(API_URL.includes("PASTE_")) throw new Error("Backend not configured. Add your Google Apps Script Web App URL.");
+  const res=await fetch(API_URL,{method:"POST",body:JSON.stringify({action:"submitVote",name,mobile,candidate,reason})});
+  const data=await res.json();
+  if(!data.success) throw new Error(data.message||"Unable to submit vote.");
+  form.style.display="none";document.getElementById('success').style.display="block";loadStats();
+ }catch(err){error(err.message);btn.disabled=false;btn.textContent="वोट जमा करें | Submit Vote"}
+});
+async function loadStats(){
+ if(API_URL.includes("PASTE_")) return;
+ try{const r=await fetch(API_URL+"?action=stats");const d=await r.json();if(d.success){document.getElementById('v1').textContent=d.mohammadChand;document.getElementById('v2').textContent=d.dawateIslamiHazrat}}catch(e){}
+}
+loadStats();
+</script>
+</body>
+</html>

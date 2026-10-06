@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Admin | Imam Voting</title>
+<style>
+body{font-family:Arial;margin:0;background:#eef8f4;color:#173b32}.top{background:#075e54;color:white;padding:22px;text-align:center}.wrap{max-width:1100px;margin:25px auto;padding:0 15px}.card{background:white;border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 7px 25px #0001}.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.box{padding:20px;background:#f4faf8;border-radius:14px;text-align:center}.num{font-size:34px;font-weight:bold;color:#075e54}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #dce9e5;text-align:left;vertical-align:top}.reason{max-width:400px;white-space:normal}.btn{border:0;padding:9px 13px;border-radius:8px;cursor:pointer;font-weight:bold}.approve{background:#d9f6e9;color:#075e54}.reject{background:#ffe3e3;color:#9b2222}.login{max-width:420px;margin:70px auto}.login input{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #ccd;border-radius:9px}.login button{width:100%;padding:13px;background:#075e54;color:#fff;border:0;border-radius:9px;font-weight:bold}@media(max-width:700px){.grid{grid-template-columns:1fr}table{font-size:13px}}
+</style></head>
+<body><div class="top"><h1>Masjid Sarkare Do Alam ﷺ</h1><div>एडमिन मतदान डैशबोर्ड | Admin Voting Dashboard</div></div>
+<div id="login" class="card login"><h2>एडमिन लॉगिन | Admin Login</h2><input id="pin" type="password" maxlength="4" placeholder="4 अंकों का PIN | 4-digit PIN"><button onclick="login()">प्रमाणित करें | Authenticate</button><p id="le" style="color:#a22"></p></div>
+<div id="app" class="wrap" style="display:none">
+<div class="grid"><div class="box"><div class="num" id="a">0</div>Mohammad Chand</div><div class="box"><div class="num" id="b">0</div>Dawate Islami Hazrat</div></div>
+<div class="card"><h2>लंबित Dawate Islami Hazrat वोट | Pending Dawate Islami Hazrat Votes</h2><p>दिए गए कारण की समीक्षा करें। समुदाय द्वारा तय मानदंड पूरे होने पर ही स्वीकृत करें।<br>Review the submitted reason and approve it according to your community rules.</p><div style="overflow:auto"><table><thead><tr><th>नाम | Name</th><th>मोबाइल | Mobile</th><th>कारण | Reason</th><th>कार्य | Action</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+<div class="card"><h2>वोट वितरण | Vote Distribution</h2><canvas id="chart" height="220"></canvas></div>
+</div>
+<footer style="text-align:center;padding:20px;color:#688079;font-size:13px">© 2026 All Rights Reserved • Designed by E-Tech • Founder: MOHD SOHAIL • Contact: 7240610313</footer>
+<script>
+const API_URL="PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";let PIN="";
+function login(){PIN=document.getElementById('pin').value;if(!/^\d{4}$/.test(PIN))return document.getElementById('le').textContent="Enter a valid 4 अंकों का PIN | 4-digit PIN.";document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';load();}
+async function api(params){const u=new URL(API_URL);Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));u.searchParams.set('pin',PIN);const r=await fetch(u);return r.json()}
+async function load(){const d=await api({action:"adminData"});if(!d.success){alert(d.message);location.reload();return}document.getElementById('a').textContent=d.mohammadChand;document.getElementById('b').textContent=d.dawateIslamiHazrat;document.getElementById('rows').innerHTML=d.pending.map(v=>`<tr><td>${esc(v.name)}</td><td>${esc(v.mobile)}</td><td class="reason">${esc(v.reason)}</td><td><button class="btn approve" onclick="act('${v.id}','approve')">Approve</button> <button class="btn reject" onclick="act('${v.id}','reject')">Reject</button></td></tr>`).join('')||'<tr><td colspan="4">No pending submissions.</td></tr>';draw(d.mohammadChand,d.dawateIslamiHazrat)}
+async function act(id,decision){const d=await api({action:"review",id,decision});alert(d.message);load()}
+function esc(s){return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function draw(a,b){const c=document.getElementById('chart'),x=c.getContext('2d'),w=c.width=c.clientWidth*2,h=c.height=220*2;x.clearRect(0,0,w,h);let total=a+b||1;let start=-Math.PI/2;[[a,'Mohammad Chand'],[b,'Dawate Islami Hazrat']].forEach((v,i)=>{let ang=v[0]/total*Math.PI*2;x.beginPath();x.moveTo(w/2,h/2);x.arc(w/2,h/2,75,i?start:start,start+ang);x.closePath();x.fillStyle=i?'#68a99a':'#075e54';x.fill();start+=ang});x.fillStyle='#173b32';x.font='bold 18px Arial';x.fillText('Mohammad Chand: '+a,w/2-120,h-35);x.fillText('Dawate Islami Hazrat: '+b,w/2+80,h-35)}
+</script></body></html>
